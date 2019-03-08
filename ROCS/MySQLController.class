@@ -1,0 +1,66 @@
+'*********************************************************************
+'*
+'* Class Name : MySQLController.class
+'* author  wang.rui
+'* version 1.00 2019/02/13
+'*
+'* History
+'* 1.00 2019/02/13  FXS)wang.rui			initialize release.
+'*********************************************************************
+Option Explicit
+
+Class MySQLController
+	Dim m_MySQLConn
+	
+	'连接数据库
+	Public Function ConnectDB()
+		On Error Resume Next
+		Const strConn = "DSN=ROCS; DRIVER={MySQL ODBC 5.1 Driver}; SERVER=127.0.0.1; DATABASE=fxs_test; PORT=3306; UID=root; PASSWORD="
+		Set m_MySQLConn = CreateObject("ADODB.connection")
+		m_MySQLConn.Open strConn
+		If Err.Number <> 0 Then
+			ConnectDB = False
+		Else
+			'查看是否连接成功，成功状态值为1
+			If m_MySQLConn.State = 0 Then
+				ConnectDB = False
+				'msgbox  "连接数据库失败"
+				'WScript.Echo "connect MySQL Fail"
+			Else
+				ConnectDB = True
+				'msgbox   "连接数据库成功"
+				'WScript.Echo "connect MySQL Success"
+			End If
+		End If
+	End Function
+	
+	'释放数据库对象 
+	Public Function CloseDB()
+		If IsEmpty(m_MySQLConn) = False Then
+			If Not m_MySQLConn Is Nothing Then
+				m_MySQLConn.Close
+				Set m_MySQLConn = Nothing
+			End If
+		End If
+	End Function
+	
+	'从数据库中检索
+	Public Function SelectFromDB()
+		Dim results
+		Const selectSQL = "SELECT * FROM table1"
+		On Error Resume Next
+		If IsEmpty(m_MySQLConn) = False And Not m_MySQLConn Is Nothing Then
+			set results = m_MySQLConn.Execute(selectSQL) 
+			If Err.Number <> 0  Then
+				SelectFromDB = False
+			Else
+				SelectFromDB = True
+				While not results.eof
+					WScript.Echo results.Fields.Item("name").Value
+					results.moveNext 
+				WEND
+			End If
+		End If	
+	End Function
+	
+End Class

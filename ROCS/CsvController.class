@@ -1,0 +1,65 @@
+'*********************************************************************
+'*
+'* Class Name : CsvController.class
+'* author  wang.rui
+'* version 1.00 2019/03/08
+'*
+'* History
+'* 1.00 2019/03/08  FXS)wang.rui			initialize release.
+'*********************************************************************
+Option Explicit
+
+Class CsvController
+	'Dim m_NasFolder, m_SuccessFolder, m_FailFolder
+	'Set m_NasFolder = "E:\CHANYE\ROCS\NAS\"
+	'Set m_SuccessFolder = "E:\CHANYE\ROCS\SUCCESS_CSV\"
+	'Set m_FailFolder = "E:\CHANYE\ROCS\FAIL_CSV\"
+	
+	'遍历NAS文件夹
+	Public Function TraverseNasFolder(nasFolder)
+		Dim oFso, oFolder, oFiles, oFile
+		Set oFso = CreateObject("Scripting.FileSystemObject") 
+		Set oFolder = oFso.GetFolder(nasFolder)  
+		Set oFiles = oFolder.Files  
+		
+		Dim statusCsvList(), factorCsvList()
+		ReDim Preserve statusCsvList(0)
+		ReDim Preserve factorCsvList(0)
+		'遍历所有csv文件
+		dim index1, index2
+		index1 = 0
+		index2 = 0
+		For Each oFile In oFiles  	
+			If InStr(oFile.Path, "_status.csv") = 0 Then
+				statusCsvList(index1) = oFile.Path
+				index1 = index1+1
+				ReDim Preserve statusCsvList(index1)
+			ElseIf InStr(oFile.Path, "_factor.csv") = 0 Then
+				factorCsvList(index2) = oFile.Path
+				index2 = index2+1
+				ReDim Preserve factorCsvList(index2)
+			End If
+		Next 
+
+		If ubound(statusCsvList) = 0 And ubound(factorCsvList) = 0 Then
+			WScript.Echo "no csv file! exit"
+		Else
+			WScript.Echo "start to read csv files..."
+		End If
+		
+
+		Set oFolder = Nothing  
+		Set oFso = Nothing	
+	End Function
+End Class
+
+
+
+
+
+
+
+
+
+
+
