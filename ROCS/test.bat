@@ -8,7 +8,9 @@
 echo start BAT
 :start
 :: start "" "C:\Program Files (x86)\sakura\sakura.exe"
-CScript  test.vbs
-:: 下行的10代表每10秒钟后循环执行start中的内容
-ping -n 10 127.1>NUL
+::CScript  test.vbs
+CScript  NoticeMailSend.vbs
+
+:: 下行的10代表每100秒钟后循环执行start中的内容
+ping -n 100 127.1>NUL
 goto start
